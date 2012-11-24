@@ -1,5 +1,0 @@
-(function(se){
-	se.Verificator.Shedule.checkTaskTagExist = function(schedule, tasktag){
-			
-	}
-})(se);
