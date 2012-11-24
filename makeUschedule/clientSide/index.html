@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link href="style/normal.css" type="text/css" rel="stylesheet" />
+	<script type="text/x-tmpl" id="formCreateSchedule">
+		<form>
+			<fieldset>
+				<legend>{%=o.createschedule%}</legend>	
+				<label for="name">{%=o.title%}</label> <input type="text" id="name" />
+				<fieldset>
+					<legend>{%=o.daysofweek%}</legend>
+				</fieldset>
+			</fieldset>
+		</form>
+	</script>
+	<script type="text/x-tmpl" id="scheduleHoursTemplate">
+		<ul class="hours borderR borderB borderColor">
+				{% for(var i = 0; i < o.schedule.times.length; ++i){ %}
+					<li class="hour borderT borderL borderColor"><span>{%=o.schedule.times[i].hours+":"+o.schedule.times[i].minutes%}</span></li>
+				{% } %}
+		</ul>
+	</script>
+	<script type="text/x-tmpl" id="scheduleDaysOfWeekTemplate">
+		<ul class="daysOfWeek">
+			{% for(var i = 0; i < o.schedule.daysOfWeek.length; ++i){ %}
+				<li class="dayOfWeek borderT borderB borderR borderColor"><span>{%=o.schedule.daysOfWeek[i]%}</span></li>
+			{% } %}			
+		</ul>
+	</script>
+	<script type="text/x-tmpl" id="scheduleMenu">
+		<ul>
+			<li><a href="#" id="addTaskLink">{%=o.menu.addtask%}</a></li>
+			<li><a href="#" id="addAdditionalTagLink">{%=o.menu.addadditionaltag%}</a></li>
+		</ul>
+	</script>
+	<script type="text/x-tmpl" id="formTask">
+		<form action="#" method="POST">
+			<fieldset style="background-color: #999">
+					<ul>
+						<li>
+							<div class="horizontalField">
+								<label for="nameTaskTag">{%=o.string.tasktagname%}</label>
+								<input type="text" id="nameTaskTag" name="nameTaskTag" disabled="disabled" value={%=o.taskTag.name %} />
+							</div>
+						</li>
+						<li>
+							<div class="horizontalField">
+								<span>{%=o.string.tagtype%}</span>
+								<select name="tagType" disabled="disabled">
+									<option name={%=o.string.backgroundtagtype%} value="0" {% if(o.taskTag.tagType.type == 0) { %} selected="selected" {% } %}>{%=o.string.backgroundtagtype%}</option>
+									<option name={%=o.string.bordertagtype%} value="1" {% if(o.taskTag.tagType.type == 1) { %} selected="selected" {% } %}>{%=o.string.bordertagtype%}</option>
+									<option name={%=o.string.texttagtype%} value="2" {% if(o.taskTag.tagType.type == 2) { %} selected="selected" {% } %}>{%=o.string.texttagtype%}</option>					
+								</select>
+							</div>
+						</li>
+						<li>
+							<div class="horizontalField">
+								<label for="addTaskFormColor">{%=o.string.tasktagcolor%}</label>
+								<input type="text" id="addTaskFormColor" name="colorTaskTag" class="color" disabled="disabled" />
+							</div>
+						</li>
+					</ul>
+				</fieldset>
+				<fieldset>
+						<ul>
+							<li>
+								<div class="horizontalField">
+									<span>{%=o.string.dayofweek%}</span>
+									<select class="timeField" name="nameDayOfWeekTask">
+										<option value={%=o.string.monday%} {% if(!o.add && o.task.dayOfWeek == 0) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.monday%}</option>
+										<option value={%=o.string.tuesday%} {% if(!o.add && o.task.dayOfWeek == 1) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.tuesday%}</option>
+										<option value={%=o.string.wednesday%} {% if(!o.add && o.task.dayOfWeek == 2) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.wednesday%}</option>
+										<option value={%=o.string.thursday%} {% if(!o.add && o.task.dayOfWeek == 3) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.thursday%}</option>
+										<option value={%=o.string.friday%} {% if(!o.add && o.task.dayOfWeek == 4) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.friday%}</option>
+										<option value={%=o.string.saturday%} {% if(!o.add && o.task.dayOfWeek == 5) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.saturday%}</option>
+										<option value={%=o.string.sunday%} {% if(!o.add && o.task.dayOfWeek == 6) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.sunday%}</option>
+									</select>
+								</div>
+							</li>
+							<li>
+								<div class="horizontalField">
+									<label for={%='hoursSinceTask'+o.taskTag.id%} >{%=o.string.since%}</label>
+									<div class="timeField">
+										<ul>
+											<li><input type="text" id={%='hoursSinceTask'+o.taskTag.id%} name="hoursSinceTask" value={% if(!o.add) { %}{%=o.task.since.hours%}{% }else{ %}{%="00"%}{% } %}></input><br/>
+										<span>h</span>
+											</li>
+											<li><span>:</span></li>
+											<li><input type="text" value={% if(!o.add) { %}{%=o.task.since.minutes%}{% }else{ %}{%="00"%}{% } %} name="minutesSinceTask"></input><br/>
+										<span>m</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="horizontalField">
+									<label for={%='hoursToTask'+o.taskTag.id%}>{%=o.string.to%}</label>
+									<div class="timeField">
+										<ul>
+											<li><input type="text" id={%='hoursToTask'+o.taskTag.id%} value={% if(!o.add) { %}{%=o.task.to.hours%}{% }else{ %}{%="00"%}{% } %} name="hoursToTask"  /><br/>
+										<span>h</span>
+											</li>
+											<li><span>:</span></li>
+											<li><input type="text" value={% if(!o.add) { %}{%=o.task.to.minutes%}{% }else{ %}{%="00"%}{% } %} name="minutesToTask" /><br/>
+										<span>m</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="horizontalField">
+									<span>{%=o.string.additionaltags%}</span>
+									<ul>
+									{% for(var i = 0; i < o.additionalTags.length; ++i){ %}
+										<li><label><input type="checkbox" name={%="additionalTag"+o.additionalTags[i].id%} value={%=''+o.additionalTags[i].id%}
+										{% if(!o.add && o.task.additionalTags.indexOf(o.additionalTags[i]) != -1) { %}{%='checked=\"checked\"'%} {% } %} />{%=o.additionalTags[i].name%}</label></li>
+									{% } %}
+									</ul>
+								</div>
+							</li>
+						</ul>
+				</fieldset>
+				<input type="button" value="{%=o.string.create%}" class="submitButton"></input>
+				{% if(!o.add){ %}
+				<input type="button" value="{%=o.string.deleteS%}" class="deleteButton"></input>
+				{% } %}
+				</form>
+	</script>
+	<script type="text/x-tmpl" id="formTaskTag">
+		<form action="#" method="POST" name={% if(o.add){ %}{%='addTaskTagForm'%}{% }else{ %}{%='updateTaskTagForm'%}{% } %}>
+			<fieldset>
+					<ul>
+						<li>
+							<div class="horizontalField">
+								<label for="addTaskFormName">{%=o.string.tasktagname%}</label>
+								<input type="text" id="addTaskFormName" name="nameTaskTag" value={% if(!o.add) { %}{%=o.taskTag.name%}{% }else{ %}{%=""%}{% } %}></input>
+							</div>
+						</li>
+						<li>
+							<div class="horizontalField">
+								<span>{%=o.string.tagtype%}</span>
+								<select id="addTaskFormTagType" name="tagType">
+									<option name={%=o.string.backgroundtagtype%} value="0" {% if(!o.add && o.taskTag.tagType.type == 0) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.backgroundtagtype%}</option>
+									<option name={%=o.string.texttagtype%} value="1" {% if(!o.add && o.taskTag.tagType.type == 1) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.texttagtype%}</option>
+									<option name={%=o.string.bordertagtype%} value="2" {% if(!o.add && o.taskTag.tagType.type == 2){ %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.bordertagtype%}</option>	
+								</select>
+							</div>
+						</li>
+						<li>
+							<div class="horizontalField">
+								<label for="addTaskFormColor">{%=o.string.tasktagcolor%}</label> 
+								<input type="text" id="addTaskFormColor" name="colorTaskTag" class="color" value={% if(!o.add){ %}{%= o.taskTag.tagType.color.slice(1)%}{% } else { %}{%='FFFFFF'%}{% } %} />
+							</div>
+							
+						</li>
+					</ul>
+				</fieldset>
+				<input type="button" value="{%=o.string.create%}" class="submitButton"></input>
+	</script>
+	<script type="text/x-tmpl" id="formAdditionalTag">
+		<form action="#" method="POST">
+			<fieldset>
+					<ul>
+						<li>
+							<div class="horizontalField">
+								<label for="nameAddAdditionalTagForm">{%=o.string.tasktagname%}</label>
+								<input type="text" id="nameAddAdditionalTagForm" name="nameAdditionalTag" value={% if(!o.add){ %}{%= o.additionalTag.name%}{% } else { %}{%=''%}{% } %}></input>
+							</div>
+						</li>
+						<li>
+							<div class="horizontalField">
+								<span>{%=o.string.tagtype%}</span>
+								<select id="addTaskFormTagType" name="tagType">
+									<option name={%=o.string.backgroundtagtype%} value="0" {% if(!o.add && o.additionalTag.tagType.type == 0) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.backgroundtagtype%}</option>
+									<option name={%=o.string.texttagtype%} value="1" {% if(!o.add && o.additionalTag.tagType.type == 1) { %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.texttagtype%}</option>
+									<option name={%=o.string.bordertagtype%} value="2" {% if(!o.add && o.additionalTag.tagType.type == 2){ %}{%='selected=\"selected\"'%} {% } %}>{%=o.string.bordertagtype%}</option>						
+								</select>
+							</div>
+						</li>
+						<li>
+							<div class="horizontalField">
+								<label for="colorAddAdditionalTagForm">{%=o.string.tasktagcolor%}</label>
+								<input type="text" id="colorAddAdditionalTagForm" name="colorAdditionalTag" value={% if(!o.add){ %}{%= o.additionalTag.tagType.color.slice(1)%}{% } else { %}{%='FFFFFF'%}{% } %} />
+							</div>
+						</li>
+					</ul>
+			</fieldset>
+			<input type="button" value="{%=o.string.create%}" class="submitButton"></input>
+		</form>
+	</script>
+	
+	
+	<script src="js/mootools-core-1.4.5-full-nocompat-yc.js" type="text/javascript"></script>
+	<script src="js/tmpl.min.js" type="text/javascript"></script>
+	<script src="js/main.js" type="text/javascript"></script>
+	<script src="js/utils.js" type="text/javascript"></script>
+	<script src="js/util/BinaryHeap.js" type="text/javascript"></script>
+	<script src="js/entity/AdditionalTag.js" type="text/javascript"></script>
+	<script src="js/entity/Schedule.js" type="text/javascript"></script>
+	<script src="js/entity/TagType.js" type="text/javascript"></script>
+	<script src="js/entity/Task.js" type="text/javascript"></script>
+	<script src="js/entity/TaskTag.js" type="text/javascript"></script>
+	<script src="js/interfaceEntity/FloatingWindow.js" type="text/javascript"></script>
+	<script src="js/interfaceEntity/Workarea.js" type="text/javascript"></script>
+	<script src="js/manager/IdentificationManager.js" type="text/javascript"></script>
+	<script src="js/manager/AdditionalTagManager.js" type="text/javascript"></script>
+	<script src="js/manager/BackgroundTagTypeManager.js" type="text/javascript"></script>
+	<script src="js/manager/BorderTagTypeManager.js" type="text/javascript"></script>
+	<script src="js/manager/ScheduleManager.js" type="text/javascript"></script>
+	<script src="js/manager/TaskManager.js" type="text/javascript"></script>
+	<script src="js/manager/TaskTagManager.js" type="text/javascript"></script>
+	<script src="js/manager/TagTypeManager.js" type="text/javascript"></script>
+	<script src="js/manager/TextTagTypeManager.js" type="text/javascript"></script>
+	<script src="js/manager/multiLangManager.js" type="text/javascript"></script>
+	<script src="js/interfaceManager/FloatingWindowManager.js" type="text/javascript"></script>
+	<script src="js/interfaceManager/WorkareaManager.js" type="text/javascript"></script>
+	<script src="js/interface/sectionInterfaceManager.js" type="text/javascript"></script>
+	<script src="js/interfaceManager/ElementDrawer.js" type="text/javascript"></script>
+	<script src="js/interfaceManager/InterfaceManager.js" type="text/javascript"></script>
+	<script src="js/Element.serialize.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/jscolor/jscolor.js"></script>
+	
+	<title></title>
+</head>
+<body>
+
+</body>
+</html>

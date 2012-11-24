@@ -1,0 +1,81 @@
+(function(se){
+	se.Interface.SectionInterfaceManager = new Class({
+		initialize: function(){
+		},
+		loadFormCreateSchelude: function(){
+			var langManager = new se.Managers.MultiLangManager();
+			var data = {
+				createschedule : langManager._("createschedule"),
+				title: langManager._("title"),
+				daysofweek: langManager._("daysofweek")			
+			};
+		
+			$('forms').set('html', tmpl("formCreateSchedule", data));
+		},
+		loadAddTaskFormWindow: function(floatingWindow, schedule){
+			var langManager = new se.Managers.MultiLangManager();
+			var FloatingWindowManager = new se.Managers.FloatingWindowManager();
+			
+			var data = {
+				string: {
+					addtask: langManager._("addtask"),
+					tasktagname: langManager._("tasktagname"),
+					tasktagcolor: langManager._("tasktagcolor"),
+					orexisting: langManager._("orexisting"),
+					since: langManager._("since"),
+					to: langManager._("to"),
+					additionaltags: langManager._("additionaltags"),
+					dayofweek: langManager._("dayofweek"),
+					hours: langManager._("hours"),
+					minutes: langManager._("minutes"),
+					tagtype: langManager._("tagtype"),
+					backgroundtagtype: langManager._("backgroundtagtype"),
+					bordertagtype: langManager._("bordertagtype"),
+					newtasktag: langManager._("newtasktag"),
+					texttagtype: langManager._("texttagtype")
+				},
+				schedule: {
+					daysOfWeek: schedule.nameDaysOfWeek,
+					taskTags: schedule.taskTags,
+					additionalTags: schedule.additionalTags
+				}
+			};
+			
+			FloatingWindowManager.setContent(floatingWindow, tmpl("formAddTask", data));
+			FloatingWindowManager.show(floatingWindow);
+			
+			$('addtaskButton').addEvent('click', function(){
+				var form = $('addTaskForm').serialize();
+				
+				console.log(form);
+			});
+			
+		},
+		loadAddAdditionalTagFormWindow: function(floatingWindow, schedule){
+			var langManager = new se.Managers.MultiLangManager();
+			var FloatingWindowManager = new se.Managers.FloatingWindowManager();
+			
+			var data = {
+				string: {
+					addadditionaltag: langManager._("addadditionaltag"),
+					tasktagname: langManager._("tasktagname"),
+					tasktagcolor: langManager._("tasktagcolor"),
+					tagtype: langManager._("tagtype"),
+					backgroundtagtype: langManager._("backgroundtagtype"),
+					bordertagtype: langManager._("bordertagtype"),
+					texttagtype: langManager._("texttagtype")
+				}
+			};
+			
+			FloatingWindowManager.setContent(floatingWindow, tmpl("formAddAdditionalTag", data));
+			FloatingWindowManager.show(floatingWindow);
+			
+			$('addAdditionalTagButton').addEvent('click', function(){
+				var form = $('addAdditionalTagForm').serialize();
+				
+				console.log(form);
+			});
+
+		}
+	});
+})(se);

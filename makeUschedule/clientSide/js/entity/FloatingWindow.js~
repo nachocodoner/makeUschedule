@@ -1,0 +1,54 @@
+(function(se){
+	se.Entities.FloatingWindow = new Class({
+		initialize: function(idFloatingWindow){
+			this.id = idFloatingWindow;
+			
+			var data = {
+				idfloatingwindow: idFloatingWindow
+			};
+
+			backgroundFloatingWindow = $$('.backgroundFloatingWindow')[0];
+			if(backgroundFloatingWindow == 'undefined' || backgroundFloatingWindow == null) {
+				backgroundFloatingWindow = new Element('div',{
+					class: 'backgroundFloatingWindow'
+				});
+				backgroundFloatingWindow.inject(document.body, 'top');
+			}
+
+			var floatingWindow = new Element('div', {
+				id: idFloatingWindow,
+				class: 'floatingWindow'
+			});
+			
+			this.element = {};
+			
+			this.element.head = new Element('div', {
+				class: 'headFloatingWindow'
+			});
+			
+			this.element.body = new Element('div', {
+				class: 'bodyFloatingWindow'
+			});
+
+			floatingWindow.inject(backgroundFloatingWindow ,'top');
+			
+			this.element.head.inject(floatingWindow, 'top');
+			this.element.body.inject(floatingWindow, 'bottom');
+			
+			this.element.close = new Element('div', {});
+			this.element.close.setStyles({
+				width: 20,
+				height: 20,
+				float: 'right'
+			});
+			
+			var floatingWindow = this;
+			this.element.close.addEvent('click', function(){
+				var floatingWindowManager = new se.Managers.FloatingWindowManager();
+				floatingWindowManager.hide(floatingWindow);
+			});
+			this.element.close.inject(this.element.head);			
+			
+		}
+	});
+})(se);

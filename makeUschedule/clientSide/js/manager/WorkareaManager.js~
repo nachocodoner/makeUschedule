@@ -1,0 +1,69 @@
+(function(se){
+	var workareas = [];
+	var idManager;
+	se.Managers.WorkareaManager = new Class({
+		initialize: function(){
+			idManager = new se.Managers.IdentificationManager();
+		},
+		add: function(schedule){
+			var idWorkarea = idManager.generateId();
+			var workarea = new se.Entities.Workarea('workarea'+idWorkarea, schedule);
+			
+			workareas.push(workarea);
+			
+			return workarea;
+		},
+		loadMenu: function(workarea, schedule){
+			var sectionInterfaceManager = new se.Interface.SectionInterfaceManager();
+			var langManager = new se.Managers.MultiLangManager();			
+			var FloatingWindowManager = new se.Managers.FloatingWindowManager();
+
+			var data = {
+				menu : {
+					addtask : langManager._("addtask"),
+					addadditionaltag: langManager._("addadditionaltag")		
+				}
+			};
+			menuHtml = tmpl("scheduleMenu", data);
+			workarea.menu.set('html', menuHtml);
+
+			var addTaskFloatingWindow = FloatingWindowManager.add('addTaskWindow');
+
+			var addTaskLink = workarea.menu.getElementById('addTaskLink');
+			addTaskLink.store('floatingwindow', addTaskFloatingWindow);
+
+			addTaskLink.addEvent('click', function(){
+				FloatingWindowManager.loadAddTaskFormWindow(this.retrieve('floatingwindow'), schedule);
+			});
+
+			var addAdditionalTagFloatingWindow = FloatingWindowManager.add('addAdditionalTagWindow');
+			var addAdditionalTagLink = workarea.menu.getElementById('addAdditionalTagLink');
+			addAdditionalTagLink.store('floatingwindow', addAdditionalTagFloatingWindow);
+			addAdditionalTagLink.addEvent('click', function(){
+    		FloatingWindowManager.loadAddAdditionalTagFormWindow(this.retrieve('floatingwindow'));
+			});
+		},
+		loadTasksMenu: function(workarea, schedule){
+			for(var i = 0; i < schedule.taskTags.length; ++i){	
+				var taskButton = new Element('button', {});
+				taskButton.inject(workarea.tasksMenu,'top');
+				taskButton.setStyles({
+					'background': schedule.taskTags[i].color
+				});
+			}
+		},
+		setDisplay: function(workarea, displayHtml){
+			workarea.menu.set('html', displayHtml);
+		},
+		show: function(workarea){		
+			workarea.element.setStyles({
+				display: 'block'
+			});	
+		},
+		hide: function(floatingWindow){
+			workarea.element.setStyles({
+				display: 'none'
+			});		
+		}
+	});
+})(se);

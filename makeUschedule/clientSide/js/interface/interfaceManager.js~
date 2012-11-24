@@ -1,0 +1,54 @@
+(function(se){
+	se.Interface.InterfaceManager = new Class({
+		initialize: function(){
+		},
+		addSchedule: function(schedule/*name, daysOfWeek, since, to, each, tasks*/){
+			var waM = new se.Managers.WorkareaManager();
+			var schM = new se.Managers.ScheduleManager();
+			var sid = new se.Interface.ScheduleDrawer();		
+				
+			var scheduleObj = schM.add(schedule.name, schedule.daysOfWeek, schedule.since, schedule.to, schedule.each);
+
+			var workarea = waM.add(scheduleObj);
+			waM.loadMenu(workarea, scheduleObj);
+
+			sid.loadSchedule(workarea, scheduleObj);
+			
+			if(schedule.taskTags != undefined && schedule.taskTags != null){
+				for(var i = 0; i < schedule.taskTags.length; ++i){
+					this.addTaskTag(scheduleObj, schedule.taskTags[i]);
+				}
+			}			
+		},
+		addTaskTag: function(schedule, task){
+			var taskManager = new se.Managers.TaskManager();
+			var scheduleManager = new se.Managers.ScheduleManager();
+			var taskTagManager = new se.Managers.TaskTagManager();
+			var additionalTagManager = new se.Managers.AdditionalTagManager();
+			var tagTaskManager = new se.Managers.TagTypeManager();
+			var sid = new se.Interface.ScheduleDrawer();
+			
+			var taskTagtagTypeObj = tagTaskManager.add(task.taskTag.tagType.type, task.taskTag.tagType.color);
+			var taskTag = taskTagManager.add(task.taskTag.name, taskTagtagTypeObj);
+			
+			scheduleManager.addTaskTag(schedule, taskTag);			
+			
+			for(var i = 0; i < task.tasks.length; ++i){
+			
+				var additionalTags = [];
+				for(var j = 0; j < task.tasks[i].additionalTags.length; ++j){
+					var AdditionalTagTypeObj = tagTaskManager.add(task.tasks[i].additionalTags[j].tagType.type, task.tasks[i].additionalTags[j].tagType.color);
+					var additionalTag = additionalTagManager.add(task.tasks[i].additionalTags[j].name, AdditionalTagTypeObj);
+					scheduleManager.addAdditionalTag(schedule, additionalTag);
+					additionalTags.push(additionalTag);					
+				}
+				
+				var taskObj = taskManager.add(task.tasks[i].dayOfWeek, task.tasks[i].since, task.tasks[i].to, additionalTags);
+				taskTagManager.addTask(taskTag, taskObj);
+			}
+			sid.addTaskTag(schedule, taskTag);
+		}
+	});
+
+
+})(se);
